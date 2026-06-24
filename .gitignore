@@ -1,0 +1,8 @@
+# Fichiers de bytecode Python
+*.pyc
+*.pyo
+*.pyd
+**'/__init__.py'
+
+# Dossier de cache Python
+__pycache__/
