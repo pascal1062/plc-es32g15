@@ -1,6 +1,6 @@
 # io_objects.py
 
-ADC_VOLTS = 3.3 * 1.055
+ADC_VOLTS_CALIB = 24 # mV
 
 class AnalogInput:
     def __init__(self, name: str, register_index: int, filter: float, calib: float, scale: object):
@@ -47,8 +47,9 @@ class AnalogInput:
         return self._lastvalue
     
     def update_from_raw(self, raw_registers: list):
-        self.ad_value = raw_registers[self.index]
-        self.volts = self.ad_value * (ADC_VOLTS / 4095)
+        #self.ad_value = raw_registers[self.index]
+        #register reading millivolts
+        self.volts = (raw_registers[self.index] - ADC_VOLTS_CALIB) / 1000
         self.newvalue = self.aic(self.volts) + self.calib
         self.value = round(self.lastvalue + (( 100.0 - self.filter) / 100.0 * (self.newvalue - self.lastvalue)), 5)
         self.lastvalue = self.value
@@ -69,21 +70,46 @@ class DigitalOutput:
         self.name = name
         self.address = modbus_address
         self.current_value = initial_value
-        self.target_value = initial_value  # C'est cette variable que vos futurs scripts modifieront
+        self.priority_array = {i: None for i in range(1, 17)}
+        self.relinquish_default = initial_value
+
+    @property
+    def target_value(self) -> int:
+        """Calcule la valeur cible selon la plus haute priorité active."""
+        for priority in range(1, 17):
+            value = self.priority_array[priority]
+            if value is not None:
+                return value
+        return self.relinquish_default
+
+    def write(self, value: int, priority: int,):
+        """Définit la valeur pour une priorité spécifique (1 à 16)."""
+        if not (1 <= priority <= 16):
+            raise ValueError("La priorité doit être comprise entre 1 et 16.")
+        self.priority_array[priority] = value
+
+    def relinquishpriority(self, priority: int):
+        """Libère une priorité spécifique en la remettant à None."""
+        if not (1 <= priority <= 16):
+            raise ValueError("La priorité doit être comprise entre 1 et 16.")
+        self.priority_array[priority] = None
 
     def update_hardware(self, plc_service, slave_id: int) -> bool:
         """Vérifie s'il y a un changement et l'écrit sur le Modbus."""
-        if self.target_value != self.current_value:
+        # target_value est maintenant évalué dynamiquement ici
+        target = self.target_value
+        if target != self.current_value:
             success = plc_service.write_register_raw(
                 address=self.address, 
-                value=self.target_value, 
+                value=target, 
                 slave_id=slave_id
             )
             if success:
-                print(f" -> [Sortie {self.name}] Synchronisée sur Modbus: {self.target_value}")
-                self.current_value = self.target_value
+                print(f" -> [Sortie {self.name}] Synchronisée sur Modbus: {target}")
+                self.current_value = target
                 return True
         return False
+
 
 # La classe AnalogOutput suivra exactement la même logique que DigitalOutput
 class AnalogOutput(DigitalOutput):

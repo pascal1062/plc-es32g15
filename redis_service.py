@@ -82,5 +82,18 @@ class RedisPLCService:
                     if hasattr(config, sched_name):
                         getattr(config, sched_name).change_hours(data.get("start"), data.get("end"))
                         
+                # Action existante : Commande manuelle des sorties
+                # Format attendu : {"action": "manual_command", "output": "DO_POMPE", "value": 1, "priority": 8}
+                elif data.get("action") == "manual_command":
+                    output_name = data.get("output")
+                    new_value = data.get("value")
+                    priority = data.get("priority")
+                    if hasattr(config, output_name):
+                        output_object = getattr(config, output_name)
+                        output_object.write(new_value,priority)            
+                        print(f"[🔴 Redis] Demande reçue : {output_name} cible définie à {new_value}")
+                    else:
+                        print(f"[❌ Redis] La sortie '{output_name}' n'existe pas dans config.py")
+                            
         except Exception as e:
             print(f"[❌ Redis] Erreur traitement commande : {e}")

@@ -7,6 +7,7 @@ class PLCIORegistry:
         self.inputs = [
             config.T1,
             config.T2,
+            config.T3,
             config.T4,
             config.DI_BOUTON_START,
             config.DI_BOUTON_STOP,

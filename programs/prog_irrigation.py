@@ -7,7 +7,8 @@ def run():
     # RÈGLE 1 : Si le capteur de fin de course (utilisé ici comme détecteur de pluie ou niveau haut) est actif,
     # on n'arrose pas et on éteint le voyant running.
     if config.DI_FIN_COURSE.value == 1:
-        config.DO_VOYANT_RUN.target_value = 0
+        #config.DO_VOYANT_RUN.target_value = 0
+        config.DO_VOYANT_RUN.write(1,10)
         #config.AO_VARIATEUR_VIT.target_value = 0 # Arrêt du variateur/électrovanne
         #return
 

@@ -27,7 +27,8 @@ def serialize_output(out_obj) -> dict:
         "name": out_obj.name,
         "current_value": out_obj.current_value,
         "target_value": out_obj.target_value,
-        "address": out_obj.address
+        "address": out_obj.address,
+        "priority": out_obj.priority_array        
     }
 
 def serialize_time_schedule(sched_obj, key_name: str) -> dict:

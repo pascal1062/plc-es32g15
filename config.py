@@ -3,7 +3,10 @@ from modbus_service import ModbusPLCService
 from redis_service import RedisPLCService
 from io_objects import AnalogInput, BinaryInput, DigitalOutput, AnalogOutput
 from utils.time_manager import TimeSchedule
-from utils.therm10KDegCPullD import SCALE_RANGE
+from utils.ntc10KTypeIII import SCALE_RANGE as SR1
+from utils.ntc10KDegC_B3950 import SCALE_RANGE as SR2
+from utils.aicPhotocell import SCALE_RANGE as SR3
+#from utils.therm10KDegCPullD import SCALE_RANGE
 
 # ==============================================================================
 # 1. PARAMÈTRES DE CONFIGURATION PHYSIQUE
@@ -30,9 +33,10 @@ plc = ModbusPLCService(port=PORT, baudrate=BAUDRATE, timeout=0.08)
 # ==============================================================================
 
 # --- ENTRÉES ANALOGIQUES (Index de position dans le tableau brut des 23 registres) ---
-T1 = AnalogInput(name="Temp_Test_1", register_index=8, filter=80.0, calib=0.0, scale=SCALE_RANGE)
-T2 = AnalogInput(name="Temp_Test_2", register_index=9, filter=80.0, calib=0.0, scale=SCALE_RANGE)
-T4 = AnalogInput(name="Temp_Test_4", register_index=11, filter=80.0, calib=0.0, scale=SCALE_RANGE)
+T1 = AnalogInput(name="Temp_Test_T1", register_index=8, filter=80.0, calib=0.0, scale=SR2)
+T2 = AnalogInput(name="Temp_Test_T2", register_index=9, filter=80.0, calib=0.0, scale=SR1)
+T3 = AnalogInput(name="Temp_Test_T3", register_index=10, filter=80.0, calib=0.0, scale=SR1)
+T4 = AnalogInput(name="Temp_Test_T4", register_index=11, filter=80.0, calib=0.0, scale=SR3)
 
 # --- ENTRÉES BINAIRES / DIGITALES (Index de position dans le tableau brut) ---
 DI_BOUTON_START  = BinaryInput(name="Bouton_Start", register_index=4)
