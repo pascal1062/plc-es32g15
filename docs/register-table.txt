@@ -1,0 +1,43 @@
+
+modbus Holding Register list for es32g15 board
+
+HREG0  : Serial modbus comm tracking. Can be left at ZERO but should be always read
+
+HREG1  : Relay 1 (CH1) R/W
+HREG2  : Relay 2 (CH2) R/W
+HREG3  : Relay 3 (CH3) R/W
+HREG4  : Relay 4 (CH4) R/W
+
+HREG5  : Digital/Binary Input (IN1) RO
+HREG6  : Digital/Binary Input (IN2) RO
+HREG7  : Digital/Binary Input (IN3) RO
+HREG8  : Digital/Binary Input (IN4) RO
+
+HREG9  : Analog Input Ohm (T1) RO
+HREG10 : Analog Input Ohm (T2) RO
+HREG11 : Analog Input Ohm (T3) RO
+HREG12 : Analog Input Ohm (T4) RO
+
+HREG13 : Analog Input Volt (VI1) RO
+HREG14 : Analog Input Volt (VI1) RO
+HREG15 : Analog Input mA   (II1) RO
+HREG16 : Analog Input mA   (II1) RO
+
+HREG17 : Analog Output DAC Volt/mA (Vo1/Io1) R/W
+HREG18 : Analog Output DAC Volt/mA (Vo2/Io2) R/W
+
+HREG19 : Free Port (GPIO15) R/W 
+HREG20 : Free Port (GPIO2)  R/W
+HREG21 : Free Port (GPIO0)  R/W
+HREG22 : Free Port (GPIO16) R/W
+
+HREG23 : Analog Input Ohm/Volt (GPIO4) RO
+
+HREG24 : Config Fail Safe/Secure Relay 1 (CH1)     R/W (0=Safe output=Off /1=Secure output no change)
+HREG25 : Config Fail Safe/Secure Relay 1 (CH2)     R/W (0=Safe output=Off /1=Secure output no change)
+HREG26 : Config Fail Safe/Secure Relay 1 (CH3)     R/W (0=Safe output=Off /1=Secure output no change)
+HREG27 : Config Fail Safe/Secure Relay 1 (CH4)     R/W (0=Safe output=Off /1=Secure output no change)
+HREG28 : Config Fail Safe/Secure AnaOut  (Vo1/Io1) R/W (0=Safe output=Off /1=Secure output no change)
+HREG29 : Config Fail Safe/Secure AnaOut  (Vo1/Io1) R/W (0=Safe output=Off /1=Secure output no change)
+
+HREG30 : Output Security Time Out if serial modbus comm fails, Default 300 sec (5 min) R/W
