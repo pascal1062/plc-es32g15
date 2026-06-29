@@ -60,18 +60,49 @@ class BinaryInput:
         self.name = name
         self.index = register_index
         self.value = 0 # 0 ou 1
+        #self._newvalue = self.value
+        self._lastvalue = self.value
+        
+    def changed(self):
+        if self.value != self._lastvalue:
+            val = 1
+        else:
+            val = 0
+        self._lastvalue = self.value
+        return val
+    
+    def rising(self):
+        if self.value != self._lastvalue:
+            val = self.value
+        else:
+            val = 0
+        self._lastvalue = self.value
+        return val
+    
+    def falling(self):
+        if (self.value != self._lastvalue):
+            val = not self.value
+        else:
+            val = 0
+        self._lastvalue = self.value
+        return val
 
     def update_from_raw(self, raw_registers: list):
         self.value = raw_registers[self.index]
 
 
 class DigitalOutput:
-    def __init__(self, name: str, modbus_address: int, initial_value: int = 0):
+    def __init__(self, name: str, modbus_address: int, register_index: int, initial_value: int = 0):
         self.name = name
         self.address = modbus_address
+        self.index = register_index
         self.current_value = initial_value
         self.priority_array = {i: None for i in range(1, 17)}
         self.relinquish_default = initial_value
+        
+    def update_from_raw(self, raw_registers: list):
+        """Met à jour l'état RÉEL de la sortie depuis le scan Modbus de 100ms."""
+        self.current_value = raw_registers[self.index]
 
     @property
     def target_value(self) -> int:
@@ -106,7 +137,7 @@ class DigitalOutput:
             )
             if success:
                 print(f" -> [Sortie {self.name}] Synchronisée sur Modbus: {target}")
-                self.current_value = target
+                #self.current_value = target --- on ne met a jour ici 
                 return True
         return False
 

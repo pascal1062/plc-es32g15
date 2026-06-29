@@ -18,11 +18,15 @@ def main():
     
     print("Scanner PLC actif avec synchronisation Redis...")
     cycle_counter = 0
+    serial_refresh = 0
+    #boot
+    config.REFRESH_HREG0.write(1,10)
 
     try:
         while True:
             start_time = time.perf_counter()
             cycle_counter += 1
+            serial_refresh += 1
             
             # =============================================================
             # 0. INTERCEPTION DES ORDRES NODE-RED via REDIS
@@ -61,7 +65,16 @@ def main():
                     print(f"[{current_time}] Registres bruts (23) : {raw_data} -> Données poussées vers Redis")
                     config.redis_client.publish_telemetry(io_system)
                     cycle_counter = 0
-
+                
+                # write to HREG0 every minute    
+                if serial_refresh >= 600:
+                    if config.REFRESH_HREG0.target_value == 0:
+                        config.REFRESH_HREG0.write(1,10)
+                    elif config.REFRESH_HREG0.target_value == 1:
+                        config.REFRESH_HREG0.write(0,10)
+                    serial_refresh = 0
+                    print("refresh HREG0")
+                    
             # Contrôle strict du cycle de 100ms
             elapsed = time.perf_counter() - start_time
             sleep_time = config.POLL_INTERVAL - elapsed

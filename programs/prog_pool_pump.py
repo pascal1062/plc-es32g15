@@ -26,7 +26,7 @@ def run():
     # Utilisation directe de l'objet horaire
     if config.SCHED_PISCINE.is_active:
         #config.DO_POMPE.target_value = 1
-        config.DO_POMPE.write(1,10)
+        config.R1_AD_POM_PISC.write(1,10)
     else:
         #config.DO_POMPE.target_value = 0
-        config.DO_POMPE.write(0,10)
+        config.R1_AD_POM_PISC.write(0,10)

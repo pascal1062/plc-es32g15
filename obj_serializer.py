@@ -39,3 +39,14 @@ def serialize_time_schedule(sched_obj, key_name: str) -> dict:
         "end": sched_obj.end_str,
         "is_active": sched_obj.is_active
     }
+    
+def serialize_timer(timer_obj, key_name: str) -> dict:
+    """Squelette pour exporter les mesures d'un timer vers Redis."""
+    return {
+        "id": key_name,
+        "is_running": timer_obj.is_running,
+        "is_done": timer_obj.is_done,
+        "elapsed_sec": round(timer_obj.get_elapsed_time(), 1),
+        "remaining_sec": round(timer_obj.get_remaining_time(), 1),
+        "remaining_min": round(timer_obj.get_remaining_time() / 60, 1)
+    }

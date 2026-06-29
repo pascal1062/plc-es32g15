@@ -3,6 +3,8 @@ from typing import Union, List
 from pymodbus.client import ModbusSerialClient
 from pymodbus.exceptions import ModbusException
 
+MAX_REG = 31
+
 class ModbusPLCService:
     def __init__(self, port: str, baudrate: int, timeout: float = 0.08):
         self.port = port
@@ -24,7 +26,7 @@ class ModbusPLCService:
         except ModbusException:
             return False
 
-    def read_registers_raw(self, address: int = 0x00, count: int = 23, slave_id: int = 1) -> Union[List, None]:
+    def read_registers_raw(self, address: int = 0x00, count: int = MAX_REG, slave_id: int = 1) -> Union[List, None]:
         """Lit directement un bloc de registres."""
         try:
             response = self.client.read_holding_registers(address=address, count=count, slave=slave_id)

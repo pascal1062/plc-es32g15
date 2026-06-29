@@ -46,6 +46,13 @@ class RedisPLCService:
                 attr_value = getattr(config, attr_name)
                 if attr_value.__class__.__name__ == "TimeSchedule":
                     system_schedules[attr_name] = obj_serializer.serialize_time_schedule(attr_value, attr_name)
+                    
+            system_timers = {}
+            for attr_name in dir(config):
+                attr_value = getattr(config, attr_name)
+                if attr_value.__class__.__name__ == "PLCReadTimer":
+                    system_timers[attr_name] = obj_serializer.serialize_timer(attr_value, attr_name)
+
 
             # Conversion JSON globale
             inputs_json = json.dumps(inputs_data)
@@ -57,10 +64,12 @@ class RedisPLCService:
             pipe.set("plc:inputs", inputs_json)
             pipe.set("plc:outputs", outputs_json)
             pipe.set("plc:schedules", schedules_json)
+            pipe.set("plc:timers", json.dumps(system_timers))
             
             pipe.publish("plc:inputs", inputs_json)
             pipe.publish("plc:outputs", outputs_json)
             pipe.publish("plc:schedules", schedules_json)
+            pipe.publish("plc:timers", json.dumps(system_timers))
             pipe.execute()
             
         except Exception as e:
